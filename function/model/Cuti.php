@@ -23,7 +23,13 @@ class Cuti {
    }
 
    function getData($params) {
-      $sql = "SELECT * FROM cuti WHERE CREATED_BY = '{$params['fullname']}'";
+      if ($params['role'] == '100' || $params['role'] == '101') {
+         $where = "";
+      } else {
+         $where = "AND CREATED_BY = '{$params['fullname']}'";
+      }
+      
+      $sql = "SELECT * FROM cuti WHERE 1 = 1 {$where}";
 
       try {
          $result = $this->conn->query($sql);
@@ -36,6 +42,18 @@ class Cuti {
       } catch (Exception $e) {
          die('Error executing query: ' . $e->getMessage());
       }
+   }
+
+   function paramsAddDataCuti($jenis_cuti, $tanggal_mulai, $tanggal_akhir, $pesan, $created_by){
+      $params = [
+         'jenis_cuti' => $jenis_cuti,
+         'tanggal_mulai' => $tanggal_mulai,
+         'tanggal_akhir' => $tanggal_akhir,
+         'pesan' => $pesan,
+         'created_by' => $created_by
+      ];
+
+      return $this->addDataCuti($params);
    }
 
    function addDataCuti($params) {
@@ -54,6 +72,25 @@ class Cuti {
       try {
          $result = $this->conn->query($sql);
          return 'true';
+      } catch (Exception $e) {
+         die('Error executing query: ' . $e->getMessage());
+      }
+   }
+}
+
+class ExtendedCuti extends Cuti {
+
+   function getData($params) {
+      $sql = "SELECT * FROM cuti WHERE STATUS = 'Approved' AND role = '{$params['role']}'";
+      
+      try {
+         $result = $this->conn->query($sql);
+         if ($result->num_rows > 0) {
+            $data = $result->fetch_all(MYSQLI_ASSOC);
+            return $data;
+         } else {
+            return [];
+         }
       } catch (Exception $e) {
          die('Error executing query: ' . $e->getMessage());
       }

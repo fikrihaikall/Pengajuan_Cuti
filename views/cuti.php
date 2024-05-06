@@ -78,11 +78,21 @@
             var html = '';
             console.log(response);
             $.each(response, function (i, v) {
+               var bgColor;
+               if (v.STATUS == 'Need Approval') {
+                  bgColor = 'bg-secondary';
+               } else if (v.STATUS == 'Approved') {
+                  bgColor = 'bg-success';
+               } else if (v.STATUS == 'Rejected') {
+                  bgColor = 'bg-danger';
+               }
                html += `
                   <tr>
                      <td>${v.CREATED_DATE}</td>
                      <td>${v.TANGGAL_MULAI} - ${v.TANGGAL_AKHIR}</td>
-                     <td>${v.STATUS}</td>
+                     <td>
+                        <button type="button" class="btn ${bgColor} text-white">${v.STATUS}</button>
+                     </td>
                      <td>${v.KETERANGAN}</td>
                   </tr>
                `;
@@ -99,14 +109,35 @@
       // alert('aa');
       var data = $('#addCuti').serialize();
       // console.log(data);
-      $.ajax({
-         type: 'post',
-         url: '../function/controller/cutiController.php?func=addcuti',
-         data: data,
-         success: function (response) {
-            console.log(response);
+      Swal.fire({
+         title: "Do you want to save the changes?",
+         showDenyButton: true,
+         showCancelButton: true,
+         confirmButtonText: "Save",
+         denyButtonText: `Don't save`
+      }).then((result) => {
+         /* Read more about isConfirmed, isDenied below */
+         if (result.isConfirmed) {
+            $.ajax({
+               type: 'post',
+               url: '../function/controller/cutiController.php?func=addcuti',
+               data: data,
+               success: function (response) {
+                  Swal.fire("Saved!", "", "success");
+               },
+               error: function (err) {
+                  console.error();
+               },
+               complete: function () {
+                  setInterval(function() {
+                     location.reload();
+                  }, 3000);
+               },
+            })
+         } else if (result.isDenied) {
+            Swal.fire("Changes are not saved", "", "info");
          }
-      })
+      });
    })
 </script>
 

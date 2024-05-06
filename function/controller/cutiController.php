@@ -7,6 +7,7 @@ class cutiController{
    public function datacuti(){
       // die('aa');
       $params = [
+         'role' => $_SESSION['role'],
          'fullname' => $_SESSION['fullname']
       ];
       
@@ -20,6 +21,7 @@ class cutiController{
       // die('aa');
       // var_dump($_SESSION);die();
       $params = [
+
          'jenis_cuti' => $_POST['jenis_cuti'],
          'tanggal_mulai' => $_POST['tanggal_mulai'],
          'tanggal_akhir' => $_POST['tanggal_akhir'],

@@ -6,7 +6,7 @@
    <div class="p-4">
       <div class="text-center">
          <h1>Selamat datang <?= $_SESSION["fullname"]; ?></h1>
-         <h3>sisa cuti anda $sisaCuti</h3>
+         <!-- <h3>sisa cuti anda $sisaCuti</h3> -->
       </div>
    </div>
 </div>

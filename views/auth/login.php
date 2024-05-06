@@ -48,7 +48,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate credentials
     if(empty($username_err) && empty($password_err)){
         // Prepare a select statement
-        $sql = "SELECT ID, FULLNAME, USERNAME, PASSWORD FROM users WHERE username = ?";
+        $sql = "SELECT ID, FULLNAME, USERNAME, PASSWORD, ROLE FROM users WHERE username = ?";
         
         if($stmt = mysqli_prepare($conn, $sql)){
             // Bind variables to the prepared statement as parameters
@@ -65,7 +65,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 // Check if username exists, if yes then verify password
                 if(mysqli_stmt_num_rows($stmt) == 1){                    
                     // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $fullname, $username, $hashed_password);
+                    mysqli_stmt_bind_result($stmt, $id, $fullname, $username, $hashed_password, $role);
                     if(mysqli_stmt_fetch($stmt)){
                         if(password_verify($password, $hashed_password)){
                             // Password is correct, so start a new session
@@ -76,6 +76,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             $_SESSION["id"] = $id;
                             $_SESSION["username"] = $username;                            
                             $_SESSION["fullname"] = $fullname;                            
+                            $_SESSION["role"] = $role;                     
                             
                             // Redirect user to welcome page
                             header("location: ../index.php");

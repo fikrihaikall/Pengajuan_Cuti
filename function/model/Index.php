@@ -38,4 +38,18 @@ class Index {
       }
    }
 
+   function update_cuti($params) {
+      // var_dump($params);die();
+
+      $sql = "UPDATE cuti SET STATUS = '{$params['status']}' WHERE ID = {$params['id']}";
+
+      // var_dump($sql);die();
+      try {
+         $result = $this->conn->query($sql);
+         return 'true';
+      } catch (Exception $e) {
+         die('Error executing query: ' . $e->getMessage());
+      }
+   }
+
 }
